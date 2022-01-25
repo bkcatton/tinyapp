@@ -69,7 +69,6 @@ app.post("/urls", (req, res) => {
 app.post("/urls/:shortURL/delete", (req, res) => {
   //when the delete button is pressed, this will happen
   delete urlDatabase[req.params.shortURL];
-  //res.render("./pages/urls_index", templateVars);
   res.redirect("/urls");
 });
 
@@ -82,11 +81,7 @@ app.get("/urls/:shortURL/update", (req, res) => {
 app.post("/urls/:shortURL/update", (req, res) => {
   //when the update button is pressed, longURL will change to longUpdate
   const templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL] };
-  console.log("longURL is : ", req.body['longURL']);
-  console.log("shortURL is : ",  req.params.shortURL);
   urlDatabase[req.params.shortURL] = req.body['longURL'];
-  //res.render("./pages/urls_show", templateVars); //redirect to /urls
-
   res.redirect("/urls");
 });
 
