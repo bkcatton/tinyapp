@@ -68,11 +68,26 @@ app.post("/urls", (req, res) => {
 
 app.post("/urls/:shortURL/delete", (req, res) => {
   //when the delete button is pressed, this will happen
-  console.log("This test worked", req.params.shortURL);
   delete urlDatabase[req.params.shortURL];
-  console.log("The database after deletion?: ", urlDatabase);
-  //console.log(urlDatabase);
-  res.render("./pages/urls_index", templateVars);
+  //res.render("./pages/urls_index", templateVars);
+  res.redirect("/urls");
+});
+
+//update URL post and get functions
+app.get("/urls/:shortURL/update", (req, res) => {
+  //when the edit button is pressed, redirect to editing page
+  res.render("./pages/urls_show", templateVars);
+});
+
+app.post("/urls/:shortURL/update", (req, res) => {
+  //when the update button is pressed, longURL will change to longUpdate
+  const templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL] };
+  console.log("longURL is : ", req.body['longURL']);
+  console.log("shortURL is : ",  req.params.shortURL);
+  urlDatabase[req.params.shortURL] = req.body['longURL'];
+  //res.render("./pages/urls_show", templateVars); //redirect to /urls
+
+  res.redirect("/urls");
 });
 
 
