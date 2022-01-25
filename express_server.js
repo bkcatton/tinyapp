@@ -66,6 +66,15 @@ app.post("/urls", (req, res) => {
   res.render("./pages/urls_show", templateVars);
 });
 
+app.post("/urls/:shortURL/delete", (req, res) => {
+  //when the delete button is pressed, this will happen
+  console.log("This test worked", req.params.shortURL);
+  delete urlDatabase[req.params.shortURL];
+  console.log("The database after deletion?: ", urlDatabase);
+  //console.log(urlDatabase);
+  res.render("./pages/urls_index", templateVars);
+});
+
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
