@@ -27,11 +27,10 @@ for (let i = 0; i < 6; i++) {
 return randString.join("");
 }
 
-console.log(generateRandomString());
-
-
 
 //set the view engine to ejs app.set('view engine', 'ejs');
+
+app.set('view engine', 'ejs');
 
 const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({extended: true}));
@@ -54,9 +53,17 @@ app.get("/urls/:shortURL", (req, res) => {
   res.render("./pages/urls_show", templateVars);
 });
 
+app.get("/u/:shortURL", (req, res) => {
+  console.log(req.params.shortURL)
+  const templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL] };
+  res.render("./pages/urls_show", templateVars);
+});
+
 app.post("/urls", (req, res) => {
-  console.log(req.body);  // Log the POST request body to the console
-  res.send("Ok");         // Respond with 'Ok' (we will replace this)
+  let randVar = generateRandomString();
+  urlDatabase[randVar] = req.body['longURL'];  //add the randomly generated string, url pair to the data base
+  const templateVars = { shortURL: randVar, longURL: req.body['longURL'] };
+  res.render("./pages/urls_show", templateVars);
 });
 
 
