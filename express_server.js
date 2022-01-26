@@ -1,13 +1,14 @@
 const express = require('express');
+const cookieParser = require('cookie-parser');
+const bodyParser = require("body-parser");
+const { name } = require('ejs');
+
+//Defining middleware
 const app = express();
-const PORT = 8080;
+app.use(cookieParser());
+app.use(bodyParser.urlencoded({extended: true}));
+app.set('view engine', 'ejs');
 
-const urlDatabase = {
-  "b2xVn2": "http://www.lighthouselabs.ca",
-  "9sm5xK": "http://www.google.com"
-};
-
-const templateVars = { urls: urlDatabase };
 
 function generateRandomString() {
   let lettersAndNumbers = [
@@ -27,42 +28,47 @@ for (let i = 0; i < 6; i++) {
 return randString.join("");
 }
 
+//set variables
+const PORT = 8080;
+const urlDatabase = {
+  "b2xVn2": "http://www.lighthouselabs.ca",
+  "9sm5xK": "http://www.google.com"
+};
 
-//set the view engine to ejs app.set('view engine', 'ejs');
+const templateVars = { urls: urlDatabase, username: "notset"};
 
-app.set('view engine', 'ejs');
-
-const bodyParser = require("body-parser");
-app.use(bodyParser.urlencoded({extended: true}));
-
+//GET and POST Methods
 app.get('/', (req, res) => {
-  //.render('./pages/urls_index');
-  res.send("This is my homepage");
+  res.render('./pages/urls_index', templateVars);
 });
 
 app.get('/urls', (req, res) => {
+  templateVars['username'] = req.cookies['username'];
   res.render("./pages/urls_index", templateVars);
 });
 
 app.get("/urls/new", (req, res) => {
-  res.render("./pages/urls_new");
+  templateVars['username'] = req.cookies['username'];
+  res.render("./pages/urls_new", templateVars);
 });
 
 app.get("/urls/:shortURL", (req, res) => {
-  const templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL] };
+  const templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL], };
+  templateVars['username'] = req.cookies['username'];
   res.render("./pages/urls_show", templateVars);
 });
 
 app.get("/u/:shortURL", (req, res) => {
-  console.log(req.params.shortURL)
-  const templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL] };
+  const templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL], };
+  templateVars['username'] = req.cookies['username'];
   res.render("./pages/urls_show", templateVars);
 });
 
 app.post("/urls", (req, res) => {
   let randVar = generateRandomString();
   urlDatabase[randVar] = req.body['longURL'];  //add the randomly generated string, url pair to the data base
-  const templateVars = { shortURL: randVar, longURL: req.body['longURL'] };
+  const templateVars = { shortURL: randVar, longURL: req.body['longURL']};
+  templateVars['username'] = req.cookies['username'];
   res.render("./pages/urls_show", templateVars);
 });
 
@@ -75,14 +81,32 @@ app.post("/urls/:shortURL/delete", (req, res) => {
 //update URL post and get functions
 app.get("/urls/:shortURL/update", (req, res) => {
   //when the edit button is pressed, redirect to editing page
+  templateVars['username'] = req.cookies['username'];
   res.render("./pages/urls_show", templateVars);
 });
 
 app.post("/urls/:shortURL/update", (req, res) => {
   //when the update button is pressed, longURL will change to longUpdate
-  const templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL] };
+  //const templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL] };
   urlDatabase[req.params.shortURL] = req.body['longURL'];
+  console.log("this is the current username: ", templateVars['username'])
   res.redirect("/urls");
+});
+
+app.post("/login", (req, res) => {
+  //when the login button is pressed, show who is logged in beside the input form
+  res.cookie('username', req.body['username']);
+  templateVars['username'] = req.cookies['username'];
+  //res.render('./pages/urls_index', templateVars);
+  console.log(templateVars['username']);
+  res.redirect("/urls");
+});
+
+app.post("/logout", (req, res) => {
+  //when the logout button is pressed, clear username
+  templateVars['username'] = 'notset';
+  res.render('./pages/urls_index', templateVars);
+  //res.redirect("/urls");
 });
 
 
