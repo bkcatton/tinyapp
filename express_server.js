@@ -88,7 +88,7 @@ const urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
-const templateVars = { urls: urlDatabase, email: "notset"};
+const templateVars = { urls: urlDatabase, user_id: undefined, email: undefined};
 
 //GET Methods
 app.get('/', (req, res) => {
@@ -150,7 +150,7 @@ app.post("/urls", (req, res) => {
   const templateVars = { shortURL: randVar, longURL: req.body['longURL']};
   let userEmail = lookUpEmailById(users, req.cookies['user_id']);
   templateVars['email'] = userEmail;
-  templateVars['user_id'] = req.cookies['user_id'];
+  //templateVars['user_id'] = req.cookies['user_id'];
   res.render("./pages/urls_show", templateVars);
 });
 
@@ -187,6 +187,7 @@ app.post("/login", (req, res) => {
     if (passwordMatchById(users, userId, req.body['password'])) {
       console.log("passwords match too")
       res.cookie('user_id', userId);
+      templateVars['user_id'] = req.cookies['user_id'];
     } else {
       console.log("passwords do not match");
     }
@@ -195,7 +196,7 @@ app.post("/login", (req, res) => {
      console.log("email match funtion returned false");
      return res.status(403);
    }
-  res.render("./pages/login_page", templateVars);
+   res.redirect('./urls');
 });
 
 app.post("/logout", (req, res) => {
@@ -225,15 +226,11 @@ app.post("/register", (req, res) => {
     email: req.body['email'],
     password: req.body['password']
   }
-  res.cookie('user_id', userID );
+ 
   let userEmail = lookUpEmailById(users, req.cookies['user_id']);
   templateVars['email'] = userEmail;
-  templateVars['user_id'] = req.cookies['user_id'];
   res.redirect('./urls');
   }
-
-  //lookup user by id from cookie, pass this user object to templateVars
-
 });
 
 
