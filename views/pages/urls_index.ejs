@@ -12,6 +12,15 @@
 </head>
 
 <body>
+  <% if (alertMessage === 'loggedout') { %> 
+    <p>Log in to see your URLS</p>
+  <% } %>
+
+  <% if (alertMessage === 'doesNotExist') { %> 
+    <p>That TinyURL does NOT exist!</p>
+  <% } %>
+
+
   <main style="margin: 1em;">
     <h2>My URL's</h2>
     <table class="table">

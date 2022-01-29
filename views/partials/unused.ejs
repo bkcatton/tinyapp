@@ -1,13 +1,2 @@
 
- <% if (username === "" || typeof username === undefined) { %>
-
-
-
-<% } else if (username) { %>
-  <form class="form-inline" action="/login" method="POST">
-    <div class="form-group mb-2">
-      <label for="login">Logged in as: <%= username %></label>
-      <button type="submit" class="btn btn-primary">Logout</button>
-    </div>
-  </form>
-  <% } %>
+ const cookieParser = require('cookie-parser');

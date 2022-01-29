@@ -12,6 +12,10 @@
 
 <body>
 
+  <% if (alertMessage === "noMatch") { %> 
+    <p>That email address is not associated with any registered account</p>
+  <% } %>
+
   <div id="update" class="card text-center">
     <div class="card-header"></div>
     <div class="card-body">
