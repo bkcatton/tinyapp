@@ -99,4 +99,5 @@ module.exports = {
   checkIfEmailIsRegistered,
   lookUpUrlsByUserId,
   deleteUrlsByUserId,
-  lookupUrlByShortAndUser};
+  lookupUrlByShortAndUser
+};
